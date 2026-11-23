@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gabriella Maas · Quadro de carreira</title>
+  <meta name="description" content="Gabriella Maas, Analista de QA. Carreira organizada como um quadro: experiências, projetos e formação em cards.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Gabriella Maas · Analista de QA">
+  <meta property="og:description" content="Minha carreira de QA organizada como um quadro. Clique nos cards para ver os detalhes.">
+  <meta property="og:image" content="https://gabriellamaas.github.io/portfolio/assets/og-image.png">
+  <meta property="og:url" content="https://gabriellamaas.github.io/portfolio/">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#board" data-ui="skip">Pular para o quadro</a>
+
+  <header class="topbar">
+    <button class="icon-btn menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="sidebar">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <span class="visually-hidden" data-ui="menu">Menu</span>
+    </button>
+    <a class="logo" href="#board" aria-label="Gabriella Maas">
+      <span class="logo-mark" aria-hidden="true">gm</span>
+      <span class="logo-text">Gabriella Maas</span>
+    </a>
+    <label class="search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
+      <span class="visually-hidden" data-ui="search">Buscar no quadro</span>
+      <input id="search" type="search" autocomplete="off" data-ui-placeholder="search" placeholder="Buscar no quadro">
+    </label>
+    <div class="top-actions">
+      <div class="lang" role="group" data-ui-aria="lang" aria-label="Idioma">
+        <button type="button" class="lang-btn" data-lang="pt" aria-pressed="true">PT</button>
+        <button type="button" class="lang-btn" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+      <a class="btn-create cv-link" href="assets/Curriculo-Gabriella-Maas-QA.pdf" download>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"/></svg>
+        <span data-ui="navCv">Baixar currículo</span>
+      </a>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="project">
+        <span class="project-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M5 12.5 9.5 17 19 7"/></svg>
+        </span>
+        <span>
+          <strong data-ui="project">Carreira de QA</strong>
+          <small data-ui="projectSub">Projeto de software</small>
+        </span>
+      </div>
+      <nav class="side-nav" aria-label="Seções">
+        <a href="#board" class="active" aria-current="page">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9 4.5v15M15 4.5v15"/></svg>
+          <span data-ui="navBoard">Quadro</span>
+        </a>
+        <a href="#GM-11">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 19.5c1.2-3.4 4-5 7-5s5.8 1.6 7 5"/></svg>
+          <span data-ui="navAbout">Sobre mim</span>
+        </a>
+        <a href="#GM-12">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="m4 7 8 6 8-6"/></svg>
+          <span data-ui="navHire">Contato</span>
+        </a>
+        <a class="cv-link" href="assets/Curriculo-Gabriella-Maas-QA.pdf" download>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.5h7l4 4v13H7z"/><path d="M14 3.5v4h4M9.5 13h6M9.5 16.5h6"/></svg>
+          <span data-ui="navCv">Baixar currículo</span>
+        </a>
+        <a href="https://github.com/gabriellamaas" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8.5 8-4 4 4 4M15.5 8l4 4-4 4"/></svg>
+          <span data-ui="navGithub">GitHub</span>
+        </a>
+      </nav>
+    </aside>
+
+    <main class="main" id="board" tabindex="-1">
+      <p class="crumbs"><span data-ui="crumbs">Projetos</span> <span aria-hidden="true">/</span> <span data-ui="project">Carreira de QA</span></p>
+      <h1 data-ui="boardTitle">Quadro</h1>
+      <p class="intro" data-testid="gabriella" data-ui="intro">Gabriella Maas, Analista de QA. Minha carreira organizada como um quadro: clique em um card para abrir os detalhes.</p>
+
+      <div class="toolbar">
+        <div class="filters" role="group" id="filters" data-ui-aria="filters" aria-label="Filtros rápidos">
+          <button type="button" class="chip" data-filter="all" aria-pressed="true" data-ui="fAll">Tudo</button>
+          <button type="button" class="chip" data-filter="exp" aria-pressed="false" data-ui="fExp">Experiência</button>
+          <button type="button" class="chip" data-filter="proj" aria-pressed="false" data-ui="fProj">Projetos</button>
+          <button type="button" class="chip" data-filter="edu" aria-pressed="false" data-ui="fEdu">Formação</button>
+          <button type="button" class="chip" data-filter="profile" aria-pressed="false" data-ui="fProfile">Perfil</button>
+        </div>
+        <div class="bg-picker">
+          <button type="button" class="chip bg-btn" id="bgBtn" aria-expanded="false" aria-controls="bgMenu">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="m4 17 5-4 4 3 3-2 4 3"/></svg>
+            <span data-ui="bgButton">Mudar fundo</span>
+          </button>
+          <div class="bg-menu" id="bgMenu" hidden>
+            <p class="bg-title" data-ui="bgTitle">Fundo do quadro</p>
+            <div class="bg-grid" id="bgGrid" role="group" data-ui-aria="bgTitle" aria-label="Fundo do quadro"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="columns" id="columns" data-testid="board"></div>
+      <noscript><p class="intro">Ative o JavaScript para ver o quadro. Contato: gabriellamaas26@gmail.com</p></noscript>
+    </main>
+  </div>
+
+  <dialog class="issue" id="issue" aria-labelledby="issue-title">
+    <div class="issue-inner" id="issueBody"></div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
