@@ -316,6 +316,15 @@
     var card = e.target.closest('.card');
     if (card) openIssue(card.getAttribute('data-key'));
   });
+  // Enter abre o card explicitamente (o Espaço continua com o comportamento nativo do botão).
+  // Assim o teclado funciona igual em qualquer navegador e nos testes automatizados.
+  document.getElementById('columns').addEventListener('keydown', function (e) {
+    var card = e.target.closest('.card');
+    if (card && e.key === 'Enter') {
+      e.preventDefault();
+      openIssue(card.getAttribute('data-key'));
+    }
+  });
 
   document.getElementById('filters').addEventListener('click', function (e) {
     var chip = e.target.closest('.chip');
