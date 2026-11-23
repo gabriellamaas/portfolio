@@ -74,6 +74,8 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 }
 .project { display: flex; align-items: center; gap: 12px; padding: 4px 8px; }
 .project-icon { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 9px; background: var(--canvas); color: #fff; }
+.project-icon .ladybug { width: 30px; height: 30px; stroke: none; }
+.project .project-icon { background: #FFFFFF; border: 1.5px solid var(--line); }
 .project strong { display: block; font-size: 15px; }
 .project small { color: var(--ink-3); font-size: 13px; }
 .side-nav { display: grid; gap: 2px; }
@@ -97,6 +99,39 @@ h1 { margin-top: 4px; font-size: 28px; line-height: 1.2; font-weight: 700; lette
 }
 .chip:hover { border-color: var(--ink-3); color: var(--ink); }
 .chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
+
+/* Drag and drop */
+.toolbar-right { display: flex; align-items: center; gap: 8px; }
+.card { touch-action: manipulation; }
+.card.dragging { opacity: .35; }
+.ghost { position: fixed; z-index: 300; pointer-events: none; margin: 0; transform: rotate(3deg); box-shadow: 0 18px 40px -10px rgba(30, 26, 51, .45); }
+body.is-dragging, body.is-dragging * { cursor: grabbing !important; user-select: none; }
+.column.drop-target { outline: 3px dashed rgba(255, 255, 255, .9); outline-offset: 2px; }
+.status-label { display: block; font-size: 12.5px; font-weight: 600; color: var(--ink-3); margin-bottom: 4px; }
+.status-select {
+  font: inherit; font-weight: 700; font-size: 13.5px; border: 0; border-radius: 6px; padding: 7px 30px 7px 12px; cursor: pointer;
+  appearance: none; background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 15px) 50%, calc(100% - 10px) 50%; background-size: 5px 5px; background-repeat: no-repeat;
+}
+.status-select.st-backlog { background-color: #ECEAF3; color: var(--ink-2); }
+.status-select.st-doing { background-color: var(--violet-soft); color: var(--violet-deep); }
+.status-select.st-review { background-color: #FFEFD6; color: #7A4700; }
+.status-select.st-done { background-color: #DCF5E7; color: #0E5A39; }
+
+/* Hire celebration */
+.hire { width: min(520px, calc(100% - 32px)); padding: 0; border: 0; border-radius: 18px; overflow: hidden; color: var(--ink); box-shadow: 0 30px 70px -15px rgba(30, 26, 51, .5); }
+.hire::backdrop { background: rgba(30, 26, 51, .55); }
+.hire-body { position: relative; padding: 36px 32px 28px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.hire-badge { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: var(--done); color: #fff; }
+.hire-badge svg { width: 34px; height: 34px; stroke-width: 2.6; }
+.hire h2 { font-size: 30px; letter-spacing: -.02em; margin-top: 6px; }
+.hire p { color: var(--ink-2); max-width: 40ch; }
+.hire-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 10px; }
+.hire-x { display: grid; position: absolute; top: 12px; right: 12px; z-index: 3; color: var(--ink-2); }
+.hire-close { margin-top: 8px; border: 0; background: none; color: var(--ink-2); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; padding: 8px; }
+.confetti { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 2; }
+.confetti span { position: absolute; top: -14px; width: 9px; height: 14px; border-radius: 2px; animation-name: fall; animation-timing-function: ease-in; animation-fill-mode: forwards; }
+@keyframes fall { to { top: 110%; transform: rotate(540deg); } }
 
 /* Background picker */
 .bg-picker { position: relative; }

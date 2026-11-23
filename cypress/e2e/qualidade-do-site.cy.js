@@ -73,6 +73,19 @@ describe('qualidade do quadro', () => {
     cy.get('#columns').invoke('attr', 'style').should('contain', '#1C7ED6')
   })
 
+  it('move o card de contratação para Concluído e mostra o convite', () => {
+    cy.visit('/#GM-12')
+    cy.get('#statusSelect').select('done')
+    cy.get('#hire').should('have.attr', 'open')
+    cy.get('#hire a[href^="mailto:"]').should('have.attr', 'href', 'mailto:gabriellamaas26@gmail.com')
+    cy.get('#hire a[href*="linkedin.com"]').should('exist')
+    cy.get('#hire [data-action="hire-close"]').click()
+    cy.get('.column[data-status="done"] [data-testid="card-GM-12"]').should('exist')
+    cy.get('#resetBoard').should('be.visible').click()
+    cy.get('.column[data-status="backlog"] [data-testid="card-GM-12"]').should('exist')
+    cy.get('#resetBoard').should('not.be.visible')
+  })
+
   it('tem metadados para compartilhamento', () => {
     cy.get('meta[property="og:title"]').should('have.attr', 'content').and('not.be.empty')
     cy.get('meta[property="og:image"]').should('have.attr', 'content').and('match', /og-image\.png$/)

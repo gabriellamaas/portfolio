@@ -3,7 +3,8 @@
 
   var DATA = window.BOARD;
   var ORDER = ['backlog', 'doing', 'review', 'done'];
-  var state = { lang: 'pt', filter: 'all', query: '' };
+  var state = { lang: 'pt', filter: 'all', query: '', moves: {} };
+  function statusOf(c) { return state.moves[c.key] || c.status; }
   var INITIALS = '<span class="avatar initials" aria-hidden="true">GM</span>';
 
   var ICON = {
@@ -88,7 +89,7 @@
   function renderBoard() {
     var ui = t();
     var html = ORDER.map(function (status) {
-      var list = cards().filter(function (c) { return c.status === status && matches(c); });
+      var list = cards().filter(function (c) { return statusOf(c) === status && matches(c); });
       return '<section class="column" data-status="' + status + '" aria-label="' + esc(ui.cols[status]) + '">' +
         '<h2 class="column-head"><span class="dot" aria-hidden="true"></span>' + esc(ui.cols[status]) +
         ' <span class="column-count">' + list.length + '</span></h2>' +
@@ -96,6 +97,7 @@
         '</section>';
     }).join('');
     document.getElementById('columns').innerHTML = html;
+    document.getElementById('resetBoard').hidden = Object.keys(state.moves).length === 0;
   }
 
   // ---------- Issue ----------
@@ -180,7 +182,11 @@
     }
     h += '</div>';
 
-    h += '<aside class="issue-aside"><span class="status-pill st-' + c.status + '">' + esc(ui.cols[c.status]) + '</span>';
+    var st = statusOf(c);
+    h += '<aside class="issue-aside"><label class="status-label" for="statusSelect">' + esc(ui.status) + '</label>' +
+      '<select id="statusSelect" class="status-select st-' + st + '" data-key="' + c.key + '">' +
+      ORDER.map(function (s) { return '<option value="' + s + '"' + (s === st ? ' selected' : '') + '>' + esc(ui.cols[s]) + '</option>'; }).join('') +
+      '</select>';
     h += '<dl class="fields">';
     h += '<div><dt>' + esc(ui.assignee) + '</dt><dd><span class="person">' + INITIALS + 'Gabriella Maas</span></dd></div>';
     h += '<div><dt>' + esc(ui.type) + '</dt><dd>' + typeIcon(c.type) + esc(ui.types[c.type]) + '</dd></div>';
@@ -198,7 +204,8 @@
     var el = document.getElementById('codeBlock');
     if (!el) return;
     if (codeCache) { el.textContent = codeCache; return; }
-    fetch(file).then(function (r) {
+    // no-cache: sempre confere com o servidor, para mostrar a versão atual do arquivo de teste.
+    fetch(file, { cache: 'no-cache' }).then(function (r) {
       if (!r.ok) throw new Error(r.status);
       return r.text();
     }).then(function (text) {
@@ -312,7 +319,119 @@
   });
 
   // ---------- Eventos ----------
+  // ---------- Mover cards ----------
+  var hireDialog = document.getElementById('hire');
+
+  function moveCard(key, status) {
+    var c = findCard(key);
+    if (!c || statusOf(c) === status) return;
+    if (status === c.status) delete state.moves[key];
+    else state.moves[key] = status;
+    renderBoard();
+    toast(t().movedTo + ' ' + t().cols[status]);
+    if (key === 'GM-12' && status === 'done') celebrate();
+  }
+
+  function celebrate() {
+    if (dialog.open) dialog.close();
+    var box = document.getElementById('confetti');
+    box.innerHTML = '';
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      var colors = ['#6241E0', '#DD4F7E', '#FFD24D', '#1F9D6B', '#5AA7F0', '#F28C38'];
+      for (var i = 0; i < 70; i++) {
+        var s = document.createElement('span');
+        s.style.left = (Math.random() * 100) + '%';
+        s.style.background = colors[i % colors.length];
+        s.style.animationDelay = (Math.random() * 0.5) + 's';
+        s.style.animationDuration = (1.6 + Math.random() * 1.2) + 's';
+        s.style.transform = 'rotate(' + Math.floor(Math.random() * 360) + 'deg)';
+        box.appendChild(s);
+      }
+    }
+    hireDialog.showModal();
+  }
+  hireDialog.addEventListener('click', function (e) {
+    if (e.target === hireDialog || e.target.closest('[data-action="hire-close"]')) hireDialog.close();
+  });
+  hireDialog.addEventListener('close', function () { document.getElementById('confetti').innerHTML = ''; });
+
+  document.getElementById('resetBoard').addEventListener('click', function () {
+    state.moves = {};
+    renderBoard();
+  });
+
+  dialog.addEventListener('change', function (e) {
+    var sel = e.target.closest('#statusSelect');
+    if (!sel) return;
+    var key = sel.getAttribute('data-key');
+    moveCard(key, sel.value);
+    if (dialog.open && !hireDialog.open) openIssue(key);
+  });
+
+  // Arrastar com mouse (direto) ou toque (segurando um instante).
+  var columnsEl = document.getElementById('columns');
+  var drag = null;
+  var suppressClick = false;
+
+  function startDrag() {
+    drag.active = true;
+    var r = drag.card.getBoundingClientRect();
+    drag.offX = drag.x - r.left;
+    drag.offY = drag.y - r.top;
+    drag.ghost = drag.card.cloneNode(true);
+    drag.ghost.classList.add('ghost');
+    drag.ghost.style.width = r.width + 'px';
+    document.body.appendChild(drag.ghost);
+    drag.card.classList.add('dragging');
+    document.body.classList.add('is-dragging');
+    positionGhost();
+  }
+  function positionGhost() {
+    drag.ghost.style.left = (drag.x - drag.offX) + 'px';
+    drag.ghost.style.top = (drag.y - drag.offY) + 'px';
+    var under = document.elementFromPoint(drag.x, drag.y);
+    var col = under && under.closest('.column');
+    document.querySelectorAll('.column.drop-target').forEach(function (c) { if (c !== col) c.classList.remove('drop-target'); });
+    if (col) col.classList.add('drop-target');
+    drag.target = col;
+  }
+  function endDrag(drop) {
+    if (!drag) return;
+    clearTimeout(drag.timer);
+    if (drag.active) {
+      suppressClick = true;
+      setTimeout(function () { suppressClick = false; }, 0);
+      drag.ghost.remove();
+      drag.card.classList.remove('dragging');
+      document.body.classList.remove('is-dragging');
+      document.querySelectorAll('.column.drop-target').forEach(function (c) { c.classList.remove('drop-target'); });
+      if (drop && drag.target) moveCard(drag.key, drag.target.getAttribute('data-status'));
+    }
+    drag = null;
+  }
+  columnsEl.addEventListener('pointerdown', function (e) {
+    var card = e.target.closest('.card');
+    if (!card || e.button !== 0) return;
+    drag = { card: card, key: card.getAttribute('data-key'), x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY, touch: e.pointerType !== 'mouse', active: false };
+    if (drag.touch) drag.timer = setTimeout(function () { if (drag && !drag.active) startDrag(); }, 280);
+  });
+  document.addEventListener('pointermove', function (e) {
+    if (!drag) return;
+    drag.x = e.clientX; drag.y = e.clientY;
+    var dist = Math.abs(drag.x - drag.sx) + Math.abs(drag.y - drag.sy);
+    if (!drag.active) {
+      if (drag.touch) { if (dist > 10) endDrag(false); return; }
+      if (dist > 6) startDrag(); else return;
+    }
+    positionGhost();
+  });
+  document.addEventListener('pointerup', function () { endDrag(true); });
+  document.addEventListener('pointercancel', function () { endDrag(false); });
+  document.addEventListener('touchmove', function (e) { if (drag && drag.active) e.preventDefault(); }, { passive: false });
+  columnsEl.addEventListener('contextmenu', function (e) { if (drag) e.preventDefault(); });
+
   document.getElementById('columns').addEventListener('click', function (e) {
+    if (suppressClick) return;
     var card = e.target.closest('.card');
     if (card) openIssue(card.getAttribute('data-key'));
   });
